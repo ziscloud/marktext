@@ -1,6 +1,7 @@
 <template>
   <div
     class="side-bar-folder"
+    v-if="!isFolderHidden(folder)"
   >
     <div
       class="folder-name" @click="folderNameClick"
@@ -82,7 +83,9 @@ export default {
       renameCache: state => state.project.renameCache,
       createCache: state => state.project.createCache,
       activeItem: state => state.project.activeItem,
-      clipboard: state => state.project.clipboard
+      imageRelativeDirectoryName: state => state.preferences.imageRelativeDirectoryName,
+      imagePreferRelativeDirectory: state => state.preferences.imagePreferRelativeDirectory,
+      imageFolderPath: state => state.preferences.imageFolderPath
     })
   },
   created () {
@@ -113,6 +116,15 @@ export default {
       const { newName } = this
       if (newName) {
         this.$store.dispatch('RENAME_IN_SIDEBAR', newName)
+      }
+    },
+    isFolderHidden (folder) {
+      if (this.imagePreferRelativeDirectory) {
+        const pattern = this.imageRelativeDirectoryName.replace(/\$\{filename\}/g, folder.name)
+        return folder.name.endsWith('.' + pattern) || folder.name === pattern
+      } else {
+        if (!this.imageFolderPath) return false
+        return folder.pathname === this.imageFolderPath
       }
     }
   }
