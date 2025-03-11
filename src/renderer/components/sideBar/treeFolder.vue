@@ -120,12 +120,14 @@ export default {
     },
     isFolderHidden (folder) {
       if (this.imagePreferRelativeDirectory) {
-        const pattern = this.imageRelativeDirectoryName.replace(/\$\{filename\}/g, folder.name)
-        return folder.name.endsWith('.' + pattern) || folder.name === pattern
-      } else {
-        if (!this.imageFolderPath) return false
-        return folder.pathname === this.imageFolderPath
+        const pattern = this.imageRelativeDirectoryName.replace(/\$\{filename\}/g, '')
+        console.log('pattern', pattern)
+        if (folder.name.endsWith(pattern) || folder.name === pattern) {
+          return true
+        }
       }
+      if (!this.imageFolderPath) return false
+      return folder.pathname === this.imageFolderPath
     }
   }
 }
